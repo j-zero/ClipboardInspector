@@ -152,7 +152,7 @@
             // btnEmpty
             // 
             this.btnEmpty.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnEmpty.Location = new System.Drawing.Point(465, 33);
+            this.btnEmpty.Location = new System.Drawing.Point(472, 33);
             this.btnEmpty.Name = "btnEmpty";
             this.btnEmpty.Size = new System.Drawing.Size(118, 23);
             this.btnEmpty.TabIndex = 16;
@@ -220,7 +220,7 @@
             // btnSave
             // 
             this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSave.Location = new System.Drawing.Point(502, 2);
+            this.btnSave.Location = new System.Drawing.Point(509, 2);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(81, 23);
             this.btnSave.TabIndex = 8;
