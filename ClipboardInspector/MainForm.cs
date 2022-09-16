@@ -101,7 +101,7 @@ namespace ClipboardViewerTest
                 clipboardDatas.Add(new ClipboardData() { Id = format.Key, Name = format.Value });
 
             if (sleep)
-                System.Threading.Thread.Sleep(50); // stop race conditions
+                System.Threading.Thread.Sleep(150); // stop race conditions
             ShowData();
         }
 
@@ -118,11 +118,16 @@ namespace ClipboardViewerTest
 
             txtID.Text = "0x" + id.ToString("X4").ToLower();
             txtName.Text = item.Name;
-            this.data = klemmbrett.ClipboardHelper.GetClipboardDataBytes(IntPtr.Zero,id);
 
-            
 
+            this.data = klemmbrett.ClipboardHelper.GetClipboardDataBytes(this.Handle,id);
+
+
+
+            this.Cursor = Cursors.WaitCursor;
             if (data == null) {
+                //txtContent.Text = "<null>";
+                this.Cursor = Cursors.Default;
                 txtContent.Text = "<null>";
                 return;
             }
@@ -149,7 +154,7 @@ namespace ClipboardViewerTest
             if (data != null && item.Name == "Rich Text Format")
                 richTextBox1.Rtf = Encoding.UTF8.GetString(data);
             */
-
+            this.Cursor = Cursors.Default;
         }
 
         private void radioText_CheckedChanged(object sender, EventArgs e)

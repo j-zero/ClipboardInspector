@@ -3,6 +3,7 @@ using System.Text;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 
 namespace klemmbrett
 {
@@ -16,10 +17,12 @@ namespace klemmbrett
         internal static extern bool GlobalUnlock(IntPtr hMem);
         [DllImport("kernel32.dll", SetLastError = true)]
         internal static extern UIntPtr GlobalSize(IntPtr hMem);
-
+        [DllImport("kernel32.dll", SetLastError = true)]
+        internal static extern uint GlobalFlags(IntPtr hMem);
         [DllImport("kernel32.dll")]
         internal static extern IntPtr GlobalLock(IntPtr hMem);
-
+        [DllImport("kernel32.dll")]
+        internal static extern IntPtr GlobalHandle(IntPtr pMem);
         [DllImport("user32.dll")]
         static extern uint EnumClipboardFormats(uint format);
         [DllImport("user32.dll")]
@@ -36,6 +39,29 @@ namespace klemmbrett
         static extern bool EmptyClipboard();
         [DllImport("user32.dll")]
         static extern int GetClipboardFormatName(uint format, [Out] StringBuilder lpszFormatName, int cchMaxCount);
+
+
+        [Flags]
+        enum GlobalMemoryFlags : uint
+        {
+            GMEM_FIXED = 0x0000,
+            GMEM_MOVEABLE = 0x0002,
+            GMEM_ZEROINIT = 0x0040,
+            GMEM_MODIFY = 0x0080,
+            GMEM_VALID_FLAGS = 0x7F72,
+            GMEM_INVALID_HANDLE = 0x8000,
+            GHND = (GMEM_MOVEABLE | GMEM_ZEROINIT),
+            GPTR = (GMEM_FIXED | GMEM_ZEROINIT),
+            /*The following values are obsolete, but are provided for compatibility with 16-bit Windows. They are ignored.*/
+            GMEM_DDESHARE = 0x2000,
+            GMEM_DISCARDABLE = 0x0100,
+            GMEM_LOWER = GMEM_NOT_BANKED,
+            GMEM_NOCOMPACT = 0x0010,
+            GMEM_NODISCARD = 0x0020,
+            GMEM_NOT_BANKED = 0x1000,
+            GMEM_NOTIFY = 0x4000,
+            GMEM_SHARE = 0x2000
+        }
 
         // https://docs.microsoft.com/de-de/windows/win32/dataxchg/standard-clipboard-formats
 
@@ -138,23 +164,49 @@ namespace klemmbrett
         internal static byte[] GetClipboardDataBytes(IntPtr handle, uint format)
         {
             byte[] buffer = new byte[0];
-            if (OpenClipboard(handle))
+
+            
+            //if (!OpenClipboard(IntPtr.Zero))
+            //    return null; // die bitch!
+
+            if (OpenClipboard(IntPtr.Zero))
             {
-                var dataPointer = GetClipboardDataPointer(format);
+                
+                var dataPointer = GetClipboardData(format);
+                
                 if (dataPointer == IntPtr.Zero)
                     return null;
 
-                var length = GetPointerDataLength(dataPointer);
-                if (length == UIntPtr.Zero)
-                {
+                GlobalUnlock(dataPointer);
+
+
+                var lockedMemory = GlobalLock(dataPointer);
+                if (lockedMemory == IntPtr.Zero)
                     return null;
+
+                UIntPtr length = UIntPtr.Zero;
+                try
+                {
+                    uint err = GlobalFlags(dataPointer);
+                    System.Diagnostics.Debug.WriteLine("GlobalFlags: 0x" + err.ToString("X"));
+                    if (err == (uint)GlobalMemoryFlags.GMEM_INVALID_HANDLE)
+                        ;
+                    length = GlobalSize(dataPointer);
+                }
+                catch(Win32Exception ex)
+                {
+                    ;
                 }
 
-                var lockedMemory = GetLockedMemoryBlockPointer(dataPointer);
+                if (length == UIntPtr.Zero)
+                    return null;
+                
+                
                 try
                 {
                     if (lockedMemory == IntPtr.Zero)
                     {
+                        GlobalUnlock(dataPointer);
                         throw new Win32Exception(Marshal.GetLastWin32Error());
                     }
 
@@ -172,42 +224,6 @@ namespace klemmbrett
             return buffer;
         }
 
-        static IntPtr GetClipboardDataPointer(uint format)
-        {
-            return GetClipboardData(format);
-        }
-
-        static UIntPtr GetPointerDataLength(IntPtr dataPointer)
-        {
-            UIntPtr result = UIntPtr.Zero;
-            GlobalLock(dataPointer);
-            result = GlobalSize(dataPointer);
-            GlobalUnlock(dataPointer);
-            return result;
-        }
-
-        static IntPtr GetLockedMemoryBlockPointer(IntPtr dataPointer)
-        {
-            return GlobalLock(dataPointer);
-        }
-
-        /*
-        public static void ListClipboardFormats()
-        {
-            //OpenClipboard(Handle);
-            OpenClipboard(IntPtr.Zero);
-
-
-            uint LastRetrievedFormat = 0;
-            while (0 != (LastRetrievedFormat = EnumClipboardFormats(LastRetrievedFormat)))
-            {
-                string Description = "0x" + LastRetrievedFormat.ToString("X4") + ": " + GetClipboardFormatName(LastRetrievedFormat);
-                Console.WriteLine(Description);
-            }
-
-            CloseClipboard();
-        }
-        */
 
         public static Dictionary<uint,string> GetClipboardFormats(IntPtr handle)
         {
@@ -217,8 +233,6 @@ namespace klemmbrett
                 uint LastRetrievedFormat = 0;
                 while (0 != (LastRetrievedFormat = EnumClipboardFormats(LastRetrievedFormat)))
                 {
-                    //string Description = "0x" + LastRetrievedFormat.ToString("X4") + ": " + GetClipboardFormatName(LastRetrievedFormat);
-                    //Console.WriteLine(Description);
                     result.Add(LastRetrievedFormat, GetClipboardFormatName(LastRetrievedFormat));
                 }
 
