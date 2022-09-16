@@ -179,7 +179,11 @@ namespace klemmbrett
 
         static UIntPtr GetPointerDataLength(IntPtr dataPointer)
         {
-            return GlobalSize(dataPointer);
+            UIntPtr result = UIntPtr.Zero;
+            GlobalLock(dataPointer);
+            result = GlobalSize(dataPointer);
+            GlobalUnlock(dataPointer);
+            return result;
         }
 
         static IntPtr GetLockedMemoryBlockPointer(IntPtr dataPointer)

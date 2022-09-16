@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace ClipboardViewerTest
 {
-    public partial class Form1 : Form
+    public partial class MainForm : Form
     {
         uint currentFormat = 0;
         byte[] data;
@@ -27,7 +27,7 @@ namespace ClipboardViewerTest
 
         }
 
-        public Form1()
+        public MainForm()
         {
             InitializeComponent();
         }
@@ -58,7 +58,7 @@ namespace ClipboardViewerTest
         private void ClipboardNotification_ClipboardUpdate(object sender, EventArgs e)
         {
             if(chkAutoUpdate.Checked || autoUpdateDisabled)
-                UpdateClipboardData();
+                UpdateClipboardData(true);
         }
 
         private void listBox1_SelectedValueChanged(object sender, EventArgs e)
@@ -76,23 +76,23 @@ namespace ClipboardViewerTest
                     case "CF_TEXT":
                     case "CF_OEMTEXT":
                     case "Csv":
-                        radioUTF8.Checked = true;
+                        //radioUTF8.Checked = true;
                         break;
                     case "CF_UNICODETEXT":
-                        radioUnicode.Checked = true;
+                        //radioUnicode.Checked = true;
                         break;
                     case "Rich Text Format":
                     case "HTML Format":
-                        radioUTF8.Checked = true;
+                        //radioUTF8.Checked = true;
                         break;
                     default:
-                        radioHex.Checked = true;
+                        //radioHex.Checked = true;
                         break;
                 }
             ShowData();
         }
 
-        void UpdateClipboardData()
+        void UpdateClipboardData(bool sleep = false)
         {
             clipboardDatas.Clear();
             Dictionary<uint, string> formats = klemmbrett.ClipboardHelper.GetClipboardFormats(this.Handle);
@@ -100,7 +100,8 @@ namespace ClipboardViewerTest
             foreach (KeyValuePair<uint, string> format in formats)
                 clipboardDatas.Add(new ClipboardData() { Id = format.Key, Name = format.Value });
 
-
+            if (sleep)
+                System.Threading.Thread.Sleep(50); // stop race conditions
             ShowData();
         }
 
@@ -199,6 +200,12 @@ namespace ClipboardViewerTest
         {
             klemmbrett.ClipboardHelper.SetClipboardDataBytesCustomFormat(this.Handle, txtCustomFormat.Text, this.data);
             ShowData();
+        }
+
+        private void txtCustomFormat_DoubleClick(object sender, EventArgs e)
+        {
+            var item = ((ClipboardData)listBox1.SelectedItem);
+            txtCustomFormat.Text = item.Name;
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace ClipboardViewerTest
 {
-    partial class Form1
+    partial class MainForm
     {
         /// <summary>
         /// Erforderliche Designervariable.
@@ -31,6 +31,11 @@
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.txtContent = new System.Windows.Forms.TextBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.txtCustomFormat = new System.Windows.Forms.TextBox();
+            this.btnCustomFormat = new System.Windows.Forms.Button();
+            this.comboDefaultFormats = new System.Windows.Forms.ComboBox();
+            this.btnSetDefaultFormat = new System.Windows.Forms.Button();
+            this.btnEmpty = new System.Windows.Forms.Button();
             this.txtSize = new System.Windows.Forms.TextBox();
             this.lblSize = new System.Windows.Forms.Label();
             this.lblName = new System.Windows.Forms.Label();
@@ -48,11 +53,6 @@
             this.radioAscii = new System.Windows.Forms.RadioButton();
             this.chkAutoUpdate = new System.Windows.Forms.CheckBox();
             this.btnUpdate = new System.Windows.Forms.Button();
-            this.btnEmpty = new System.Windows.Forms.Button();
-            this.btnSetDefaultFormat = new System.Windows.Forms.Button();
-            this.comboDefaultFormats = new System.Windows.Forms.ComboBox();
-            this.btnCustomFormat = new System.Windows.Forms.Button();
-            this.txtCustomFormat = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -111,6 +111,54 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(593, 97);
             this.panel1.TabIndex = 3;
+            // 
+            // txtCustomFormat
+            // 
+            this.txtCustomFormat.Location = new System.Drawing.Point(369, 63);
+            this.txtCustomFormat.Name = "txtCustomFormat";
+            this.txtCustomFormat.Size = new System.Drawing.Size(221, 20);
+            this.txtCustomFormat.TabIndex = 21;
+            this.txtCustomFormat.DoubleClick += new System.EventHandler(this.txtCustomFormat_DoubleClick);
+            // 
+            // btnCustomFormat
+            // 
+            this.btnCustomFormat.Location = new System.Drawing.Point(245, 62);
+            this.btnCustomFormat.Name = "btnCustomFormat";
+            this.btnCustomFormat.Size = new System.Drawing.Size(118, 23);
+            this.btnCustomFormat.TabIndex = 20;
+            this.btnCustomFormat.Text = "custom format:";
+            this.btnCustomFormat.UseVisualStyleBackColor = true;
+            this.btnCustomFormat.Click += new System.EventHandler(this.btnCustomFormat_Click);
+            // 
+            // comboDefaultFormats
+            // 
+            this.comboDefaultFormats.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboDefaultFormats.FormattingEnabled = true;
+            this.comboDefaultFormats.Location = new System.Drawing.Point(130, 63);
+            this.comboDefaultFormats.Name = "comboDefaultFormats";
+            this.comboDefaultFormats.Size = new System.Drawing.Size(109, 23);
+            this.comboDefaultFormats.TabIndex = 19;
+            // 
+            // btnSetDefaultFormat
+            // 
+            this.btnSetDefaultFormat.Location = new System.Drawing.Point(6, 62);
+            this.btnSetDefaultFormat.Name = "btnSetDefaultFormat";
+            this.btnSetDefaultFormat.Size = new System.Drawing.Size(118, 24);
+            this.btnSetDefaultFormat.TabIndex = 18;
+            this.btnSetDefaultFormat.Text = "set as format:";
+            this.btnSetDefaultFormat.UseVisualStyleBackColor = true;
+            this.btnSetDefaultFormat.Click += new System.EventHandler(this.btnSetDefaultFormat_Click);
+            // 
+            // btnEmpty
+            // 
+            this.btnEmpty.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnEmpty.Location = new System.Drawing.Point(465, 33);
+            this.btnEmpty.Name = "btnEmpty";
+            this.btnEmpty.Size = new System.Drawing.Size(118, 23);
+            this.btnEmpty.TabIndex = 16;
+            this.btnEmpty.Text = "empty clipboard";
+            this.btnEmpty.UseVisualStyleBackColor = true;
+            this.btnEmpty.Click += new System.EventHandler(this.btnEmpty_Click);
             // 
             // txtSize
             // 
@@ -172,7 +220,7 @@
             // btnSave
             // 
             this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSave.Location = new System.Drawing.Point(509, 2);
+            this.btnSave.Location = new System.Drawing.Point(502, 2);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(81, 23);
             this.btnSave.TabIndex = 8;
@@ -292,56 +340,7 @@
             this.btnUpdate.UseVisualStyleBackColor = true;
             this.btnUpdate.Click += new System.EventHandler(this.btnUpdate_Click);
             // 
-            // btnEmpty
-            // 
-            this.btnEmpty.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnEmpty.Location = new System.Drawing.Point(472, 33);
-            this.btnEmpty.Name = "btnEmpty";
-            this.btnEmpty.Size = new System.Drawing.Size(118, 23);
-            this.btnEmpty.TabIndex = 16;
-            this.btnEmpty.Text = "empty clipboard";
-            this.btnEmpty.UseVisualStyleBackColor = true;
-            this.btnEmpty.Click += new System.EventHandler(this.btnEmpty_Click);
-            // 
-            // btnSetDefaultFormat
-            // 
-            this.btnSetDefaultFormat.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSetDefaultFormat.Location = new System.Drawing.Point(6, 62);
-            this.btnSetDefaultFormat.Name = "btnSetDefaultFormat";
-            this.btnSetDefaultFormat.Size = new System.Drawing.Size(118, 24);
-            this.btnSetDefaultFormat.TabIndex = 18;
-            this.btnSetDefaultFormat.Text = "set as format:";
-            this.btnSetDefaultFormat.UseVisualStyleBackColor = true;
-            this.btnSetDefaultFormat.Click += new System.EventHandler(this.btnSetDefaultFormat_Click);
-            // 
-            // comboDefaultFormats
-            // 
-            this.comboDefaultFormats.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboDefaultFormats.FormattingEnabled = true;
-            this.comboDefaultFormats.Location = new System.Drawing.Point(130, 63);
-            this.comboDefaultFormats.Name = "comboDefaultFormats";
-            this.comboDefaultFormats.Size = new System.Drawing.Size(121, 23);
-            this.comboDefaultFormats.TabIndex = 19;
-            // 
-            // btnCustomFormat
-            // 
-            this.btnCustomFormat.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCustomFormat.Location = new System.Drawing.Point(257, 63);
-            this.btnCustomFormat.Name = "btnCustomFormat";
-            this.btnCustomFormat.Size = new System.Drawing.Size(118, 23);
-            this.btnCustomFormat.TabIndex = 20;
-            this.btnCustomFormat.Text = "custom format:";
-            this.btnCustomFormat.UseVisualStyleBackColor = true;
-            this.btnCustomFormat.Click += new System.EventHandler(this.btnCustomFormat_Click);
-            // 
-            // txtCustomFormat
-            // 
-            this.txtCustomFormat.Location = new System.Drawing.Point(381, 63);
-            this.txtCustomFormat.Name = "txtCustomFormat";
-            this.txtCustomFormat.Size = new System.Drawing.Size(209, 20);
-            this.txtCustomFormat.TabIndex = 21;
-            // 
-            // Form1
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -353,7 +352,7 @@
             this.Controls.Add(this.listBox1);
             this.Font = new System.Drawing.Font("Cascadia Mono", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MinimumSize = new System.Drawing.Size(842, 474);
-            this.Name = "Form1";
+            this.Name = "MainForm";
             this.Text = "Clipboard Inspector";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.panel1.ResumeLayout(false);
